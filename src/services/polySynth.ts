@@ -5,11 +5,12 @@ export async function polySynth(textToVoicify: string) {
   const S3_BUCKET = 'hackathon-voice-1';
   const pollyClient = new PollyClient({ region: REGION });
   const pollyParams = {
+    Engine: 'neural',
     OutputFormat: 'mp3',
     OutputS3BucketName: S3_BUCKET,
     Text: textToVoicify,
     TextType: 'text',
-    VoiceId: 'Joanna',
+    VoiceId: 'Joey',
     SampleRate: '22050',
   };
 

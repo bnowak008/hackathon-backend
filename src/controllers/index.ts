@@ -18,7 +18,7 @@ export const saveAudio = (req: Request, res: Response) => {
 
 export const pollySynth = async (req: Request, res: Response) => {
     const text = `
-        At the heart of a serene stream, Oda Otternaga lounges with authority. His sleek, wet brown fur contrasts 
+        At the heart of a serene stream, Oda Otter-naga lounges with authority. His sleek, wet brown fur contrasts 
         brilliantly with his ornate armor, designed intricately with pearl and seashell embellishments. An impressive 
         helmet with a sea-star crest rests securely on his head, and his tiny paws firmly grasp a gleaming kelp-bladed 
         katana, a symbol of his martial prowess and desire to unify the river domains.
