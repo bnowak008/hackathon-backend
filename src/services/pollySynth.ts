@@ -1,15 +1,16 @@
 import { PollyClient, StartSpeechSynthesisTaskCommand, StartSpeechSynthesisTaskCommandInput } from '@aws-sdk/client-polly';
 
-export async function polySynth(textToVoicify: string) {
+export async function pollySynth(textToVoicify: string) {
   const REGION = 'us-east-1';
-  const S3_BUCKET = 'hackathon-voice';
+  const S3_BUCKET = 'hackathon-voice-1';
   const pollyClient = new PollyClient({ region: REGION });
   const pollyParams: StartSpeechSynthesisTaskCommandInput = {
+    Engine: 'neural',
     OutputFormat: 'mp3',
     OutputS3BucketName: S3_BUCKET,
     Text: textToVoicify,
     TextType: 'text',
-    VoiceId: 'Joanna',
+    VoiceId: 'Joey',
     SampleRate: '22050',
   };
 
