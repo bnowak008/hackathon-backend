@@ -3,6 +3,9 @@ import aws from 'aws-sdk';
 
 const REGION = 'us-east-1';
 
+import { polySynth } from './polySynth';
+export { polySynth };
+
 aws.config.update({ region: REGION });
 const s3 = new aws.S3({apiVersion: '2006-03-01'});
 

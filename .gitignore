@@ -1,3 +1,6 @@
 node_modules
 public
 .env
+.idea/ai-hackathon-backend.iml
+.idea/modules.xml
+.idea/vcs.xml
