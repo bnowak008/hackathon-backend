@@ -2,7 +2,7 @@ import { PollyClient, StartSpeechSynthesisTaskCommand } from '@aws-sdk/client-po
 
 export async function polySynth(textToVoicify: string) {
   const REGION = 'us-east-1';
-  const S3_BUCKET = 'hackathon-voice';
+  const S3_BUCKET = 'hackathon-voice-1';
   const pollyClient = new PollyClient({ region: REGION });
   const pollyParams = {
     OutputFormat: 'mp3',
