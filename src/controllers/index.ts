@@ -1,9 +1,16 @@
 import { Request, Response } from 'express';
 
-const saveAudio = (req: Request, res: Response) => {
-    console.log(req.body);
+import { transcribeAudio } from '../services';
 
-    res.status(200).send('yes')
+export const saveAudio = (req: Request, res: Response) => {
+    const file = req.file;
+
+    if (file) {
+        const transcribedText = transcribeAudio(file);
+        console.log(transcribedText);
+
+        res.send(transcribedText);
+    } else {
+        res.status(400).send('no audio file passed with request')
+    }
 }
-
-export const Controller = { saveAudio };
