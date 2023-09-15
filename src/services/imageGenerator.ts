@@ -3,7 +3,7 @@ import { SageMakerRuntimeClient, InvokeEndpointCommand } from '@aws-sdk/client-s
 
 export async function imageGenerator(textToImagify: string) {
   const REGION = 'us-east-1';
-  const IMAGE_PROCESS_ENDPOINT_NAME = '???';
+  const IMAGE_PROCESS_ENDPOINT_NAME = 'jumpstart-dft-stable-diffusion-v2-1-base';
   const S3_BUCKET = 'hackathon-voice-1';
 
   aws.config.update({ region: REGION });
