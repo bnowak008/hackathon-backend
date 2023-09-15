@@ -1,22 +1,25 @@
-import { StartTranscriptionJobCommand, TranscribeClient } from "@aws-sdk/client-transcribe";
+import { ListTranscriptionJobsCommand, StartTranscriptionJobCommand, TranscribeClient, StartTranscriptionJobCommandInput } from "@aws-sdk/client-transcribe";
 import aws from 'aws-sdk';
 
-const REGION = 'us-east-1';
+const REGION = 'us-east-2';
 
 import { polySynth } from './polySynth';
 export { polySynth };
 
 aws.config.update({ region: REGION });
-const s3 = new aws.S3({apiVersion: '2006-03-01'});
+const s3 = new aws.S3({ apiVersion: '2006-03-01' });
+const transcribeClient = new TranscribeClient({ region: REGION });
+const Bucket = 'hackathon-voice';
 
 export const transcribeAudio = async (file: Express.Multer.File) => {
-    const transcribeClient = new TranscribeClient({ region: REGION });
-
     const uploadParams: aws.S3.PutObjectRequest = {
-        Bucket: 'hackathon-voice-1',
+        Bucket: Bucket,
         Key: file.originalname,
-        Body: file.buffer
+        Body: file.buffer,
+        ContentType: 'audio/mpeg'
     };
+
+    let transcription = '';
 
     try {
         const stored = await s3.upload(uploadParams, async function (err: any, data: any) {
@@ -27,21 +30,57 @@ export const transcribeAudio = async (file: Express.Multer.File) => {
             }
         }).promise();
 
-        const test = await transcribeClient.send(new StartTranscriptionJobCommand({
+        await transcribeClient.send(new StartTranscriptionJobCommand({
             TranscriptionJobName: file.originalname,
-            LanguageCode: "en-US", // For example, 'en-US'
-            MediaFormat: "mp3", // For example, 'wav'
+            LanguageCode: "en-US", // For example, 'en-US',
+            MediaFormat: 'ogg',
             Media: {
                 MediaFileUri: stored.Location,
-                // For example, "https://transcribe-demo.s3-REGION.amazonaws.com/hello_world.wav"
             },
+            OutputBucketName: Bucket
         }));
 
-        console.log(test);
+        let status = 'IN_PROGRESS';
+        transcription = await new Promise((resolve, reject) => {
+            const progressInterval = setInterval(async () => {
+            if (status === 'IN_PROGRESS') {
+                const job = await getTranscribeJob(file.originalname);
+
+                if (job && job?.TranscriptionJobStatus !== 'IN_PROGRESS') {
+                    status = job?.TranscriptionJobStatus ?? '';
+
+                    if (status === 'COMPLETED') {
+                        const resp = await s3.getObject({
+                            Bucket: Bucket,
+                            Key: `${file.originalname}.json`,
+                        }).promise()
+                        
+                        if (resp && resp.Body) {
+                            resolve(JSON.parse(resp.Body.toString('utf-8')).results.transcripts[0].transcript ?? '');
+                        }
+                    }
+
+                    clearInterval(progressInterval);
+                }
+            }
+        }, 2000);
+    });
+
     } catch (e) {
         console.error(e);
         return;
     }
 
-    return 'test';
+    return transcription;
+}
+
+const getTranscribeJob = async (jobName: string) => {
+    
+    const data = await transcribeClient.send(
+        new ListTranscriptionJobsCommand({
+            JobNameContains: jobName
+        })
+    );
+
+    return data.TranscriptionJobSummaries?.[0];
 }

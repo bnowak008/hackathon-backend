@@ -2,13 +2,13 @@ import { Request, Response } from 'express';
 
 import { transcribeAudio, polySynth } from '../services';
 
-export const saveAudio = (req: Request, res: Response) => {
+export const saveAudio = async (req: Request, res: Response) => {
     const file = req.file;
-
-    console.log(file);
     
     if (file) {
-        const transcribedText = transcribeAudio(file);
+        const transcribedText = await transcribeAudio(file);
+
+        console.log(transcribedText);
 
         res.send(transcribedText);
     } else {
