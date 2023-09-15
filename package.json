@@ -11,6 +11,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@aws-sdk/client-polly": "^3.413.0",
     "@aws-sdk/client-transcribe": "^3.413.0",
     "aws-sdk": "^2.1458.0",
     "body-parser": "^1.20.2",
